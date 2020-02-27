@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="WebAPIDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ProjectID" Type="Int32" />
+    <Property Name="TaskID" Type="Int32" />
+    <NavigationProperty Name="Project" Relationship="WebAPIDBModel.FK_User_Project" FromRole="User" ToRole="Project" />
+    <NavigationProperty Name="Task" Relationship="WebAPIDBModel.FK_User_Task" FromRole="User" ToRole="Task" />
+  </EntityType>
+  <EntityContainer Name="WebAPIDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="Projects" EntityType="WebAPIDBModel.Project" />
+    <AssociationSet Name="FK_User_Project" Association="WebAPIDBModel.FK_User_Project">
+      <End Role="Project" EntitySet="Projects" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <EntitySet Name="Tasks" EntityType="WebAPIDBModel.Task" />
+    <AssociationSet Name="FK_User_Task" Association="WebAPIDBModel.FK_User_Task">
+      <End Role="Task" EntitySet="Tasks" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <EntitySet Name="Parent_Task" EntityType="WebAPIDBModel.Parent_Task" />
+  </EntityContainer>
+  <EntityType Name="Project">
+    <Key>
+      <PropertyRef Name="ProjectID" />
+    </Key>
+    <Property Name="ProjectID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StartDate" Type="DateTime" Precision="3" />
+    <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="Priority" Type="Int32" />
+    <NavigationProperty Name="Users" Relationship="WebAPIDBModel.FK_User_Project" FromRole="Project" ToRole="User" />
+    <Property Name="ProjectTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <Association Name="FK_User_Project">
+    <End Type="WebAPIDBModel.Project" Role="Project" Multiplicity="0..1" />
+    <End Type="WebAPIDBModel.User" Role="User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Project">
+        <PropertyRef Name="ProjectID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="ProjectID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Task">
+    <Key>
+      <PropertyRef Name="TaskID" />
+    </Key>
+    <Property Name="TaskID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ParentID" Type="Int32" />
+    <Property Name="ProjectID" Type="Int32" />
+    <Property Name="Task1" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="StartDate" Type="DateTime" Precision="3" />
+    <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="Priority" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Users" Relationship="WebAPIDBModel.FK_User_Task" FromRole="Task" ToRole="User" />
+  </EntityType>
+  <Association Name="FK_User_Task">
+    <End Type="WebAPIDBModel.Task" Role="Task" Multiplicity="0..1" />
+    <End Type="WebAPIDBModel.User" Role="User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Task">
+        <PropertyRef Name="TaskID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="TaskID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Parent_Task">
+    <Key>
+      <PropertyRef Name="ParentID" />
+    </Key>
+    <Property Name="ParentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ParentTask" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+</Schema>
